@@ -59,7 +59,7 @@ public:
     string getdate() {
          return date; 
         }
-    int getAvailableseats() {
+    int getavailableseats() {
          return avseats;
          }
 };
