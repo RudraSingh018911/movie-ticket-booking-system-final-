@@ -35,13 +35,13 @@ public:
                 avseats = seats;
         }
 
-    void showDetails(int index) {
+    void showdetails(int index) {
         cout << index << ". Date: " << date << " | Time: " << time 
              << " | Hall: " << hallnumber 
              << " | Available Seats: " << avseats << endl;
     }
 
-    bool bookSeat() {
+    bool bookseat() {
         if (avseats > 0) {
             avseats--;
             return true;
@@ -49,17 +49,17 @@ public:
         return false;
     }
 
-    void cancelSeat() { 
+    void cancelseat() { 
         avseats++; 
     }
 
-    string getTime() {
+    string gettime() {
          return time; 
         }
-    string getDate() {
+    string getdate() {
          return date; 
         }
-    int getAvailableSeats() {
+    int getAvailableseats() {
          return avseats;
          }
 };
