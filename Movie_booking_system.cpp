@@ -63,3 +63,71 @@ public:
          return avseats;
          }
 };
+class Ticket {
+private:
+    static int count;
+    int ticketid;
+    string movietitle;
+    string showtime;
+public:
+    ticket(string m, string s) {
+        ticketid = count++;
+        movietitle = m;
+        showtime = s;
+    }
+    int getid() {
+         return ticketid; 
+        }
+    string getshowtime() {
+         return showtime; 
+        }
+    string getmovietitle() { 
+        return movietitle;
+     }
+    void displayticket() {
+        cout << "Ticket ID: " << ticketid 
+             << " | movie: " << movietitle 
+             << " | Show: " << showtime << endl;
+    }
+};
+int Ticket::count = 0;
+class User {
+private:
+    string name;
+    string email;
+    vector<Ticket> bookedtickets;
+public:
+    User(string n, string e){
+        name = n;
+        email = e;
+    }
+
+    void bookticket(Ticket t) {
+        bookedtickets.push_back(t);
+        cout << "Ticket booked successfully for " << name << endl;
+    }
+
+    void viewbooking(){
+        cout << "\nBookings for " << name << ":\n";
+        if (bookedtickets.empty()) {
+            cout << "No bookings yet.\n";
+        } else {
+            for(int i = 0; i<bookedtickets.size(); i++){
+                bookedtickets[i].displayticket();
+            }
+        }
+    }
+
+    bool ticketcancel(int ticketid) {
+        for(int i=0; i< bookedtickets.size(); i++){
+            if(bookedtickets[i].getid() == ticketid ){
+                for(int j = i; j< bookedtickets.size()- 1; j++){
+                    bookedtickets[j] = bookedtickets[j+1];
+                }
+                bookedtickets.pop_back();
+                return true;
+            }
+        }
+    return false;
+ }
+};
