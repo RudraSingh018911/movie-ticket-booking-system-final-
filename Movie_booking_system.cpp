@@ -177,12 +177,18 @@ private:
     vector<movie> movies;
     vector<showtime> showtimes;
 public:
-    void addmovie(movie m) { movies.push_back(m); }
-    void addshowtime(showtime s) { showtimes.push_back(s); }
+    void addmovie(movie m) {
+        movies.push_back(m); 
+    }
+    void addshowtime(showtime s) { 
+        showtimes.push_back(s); 
+    }
 
     void showallmovies() {
         cout << "\nMovies Available:\n";
-        if (movies.empty()) { cout << "No movies available.\n"; return; }
+        if (movies.size() == 0) { 
+            cout << "No movies available.\n"; return;
+        }
         for (int i=0; i<movies.size(); i++) movies[i].displayDetails(i+1);
     }
 
