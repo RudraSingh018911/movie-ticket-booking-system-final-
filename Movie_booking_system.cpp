@@ -21,3 +21,45 @@ public:
          return title;
          }
 };
+class showtime {
+private:
+    string time;
+    string date;
+    int hallnumber;
+    int avseats;
+public:
+    showtime(string time, string date, int hall=1, int seats=50) {
+                this->time = time;
+                this->date = date;
+                this->hallnumber = hall;
+                avseats = seats;
+        }
+
+    void showDetails(int index) {
+        cout << index << ". Date: " << date << " | Time: " << time 
+             << " | Hall: " << hallnumber 
+             << " | Available Seats: " << avseats << endl;
+    }
+
+    bool bookSeat() {
+        if (avseats > 0) {
+            avseats--;
+            return true;
+        }
+        return false;
+    }
+
+    void cancelSeat() { 
+        avseats++; 
+    }
+
+    string getTime() {
+         return time; 
+        }
+    string getDate() {
+         return date; 
+        }
+    int getAvailableSeats() {
+         return avseats;
+         }
+};
