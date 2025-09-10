@@ -131,3 +131,73 @@ public:
     return false;
  }
 };
+int Ticket::count = 0;
+class User {
+private:
+    string name;
+    string email;
+    vector<Ticket> bookedtickets;
+public:
+    User(string n, string e){
+        name = n;
+        email = e;
+    }
+
+    void bookticket(Ticket t) {
+        bookedtickets.push_back(t);
+        cout << "Ticket booked successfully for " << name << endl;
+    }
+
+    void viewbooking(){
+        cout << "\nBookings for " << name << ":\n";
+        if (bookedtickets.empty()) {
+            cout << "No bookings yet.\n";
+        } else {
+            for(int i = 0; i<bookedtickets.size(); i++){
+
+            }
+        }
+    }
+
+    bool ticketcancel(int ticketid) {
+        for (auto it = bookedtickets.begin(); it != bookedtickets.end(); ++it) {
+            if (it->getid() == ticketid) {
+                bookedtickets.erase(it);
+                return true;
+            }
+        }
+        return false;
+    }
+};
+class bookingsystem {
+private:
+    vector<movie> movies;
+    vector<showtime> showtimes;
+public:
+    void addmovie(movie m) { movies.push_back(m); }
+    void addshowtime(showtime s) { showtimes.push_back(s); }
+
+    void showallmovies() {
+        cout << "\nMovies Available:\n";
+        if (movies.empty()) { cout << "No movies available.\n"; return; }
+        for (int i=0; i<movies.size(); i++) movies[i].displayDetails(i+1);
+    }
+
+    void showallshowtimes() {
+        cout << "\nShowtimes Available:\n";
+        if (showtimes.empty()) { cout << "No showtimes available.\n"; return; }
+        for (int i=0; i<showtimes.size(); i++) showtimes[i].showDetails(i+1);
+    }
+
+    string getmovietitle(int index) {
+        if (index < 1 || index > movies.size()) 
+            throw out_of_range("Invalid movie selection!");
+        return movies[index-1].gettitle();
+    }
+
+    showtime* getshowtime(int index) {
+        if (index < 1 || index > showtimes.size()) 
+            throw out_of_range("Invalid showtime selection!");
+        return &showtimes[index-1];
+    }
+};
