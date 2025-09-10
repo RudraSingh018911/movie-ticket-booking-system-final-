@@ -186,7 +186,7 @@ public:
     void showallshowtimes() {
         cout << "\nShowtimes Available:\n";
         if (showtimes.empty()) { cout << "No showtimes available.\n"; return; }
-        for (int i=0; i<showtimes.size(); i++) showtimes[i].showDetails(i+1);
+        for (int i=0; i<showtimes.size(); i++) showtimes[i].showdetails(i+1);
     }
 
     string getmovietitle(int index) {
