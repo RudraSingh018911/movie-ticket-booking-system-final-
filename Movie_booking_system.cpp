@@ -70,7 +70,7 @@ private:
     string movietitle;
     string showtime;
 public:
-    ticket(string m, string s) {
+    Ticket(string m, string s) {
         ticketid = count++;
         movietitle = m;
         showtime = s;
