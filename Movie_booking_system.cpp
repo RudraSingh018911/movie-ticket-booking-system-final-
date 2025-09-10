@@ -201,3 +201,94 @@ public:
         return &showtimes[index-1];
     }
 };
+int main() {
+    BookingSystem system;
+
+    // Add Movies
+    system.addMovie(movie("Inception", "Sci-Fi", 148));
+    system.addMovie(movie("Avengers", "Action", 180));
+    system.addMovie(movie("Interstellar", "Sci-Fi", 169));
+
+    // Add Showtimes
+    system.addShowtime(showtime("10:00 AM", "2025-09-12", 1, 5));
+    system.addShowtime(showtime("2:00 PM", "2025-09-12", 2, 3));
+    system.addShowtime(showtime("7:00 PM", "2025-09-12", 3, 2));
+
+    // Create User
+    User u1("Rudraksha", "rudra@example.com");
+
+    int choice;
+      while(choice != 6){
+    cout << "\n========= movie Ticket Booking =========\n";
+    cout << "1. View Movies\n";
+    cout << "2. View Showtimes\n";
+    cout << "3. Book Ticket\n";
+    cout << "4. View My Bookings\n";
+    cout << "5. Cancel Ticket\n";
+    cout << "6. Exit\n";
+    cout << "Enter your choice: ";
+
+    if(!(cin >> choice)){
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Invalid input! Please enter a number.\n";
+        continue;
+    }
+
+    try{
+        switch(choice){
+            case 1:
+                system.showAllMovies();
+                break;
+            case 2:
+                system.showAllShowtimes();
+                break;
+            case 3:{
+                system.showAllMovies();
+                cout << "Select a movie number: ";
+                int mChoice; 
+                cin >> mChoice;
+                string selectedMovie = system.getmovietitle(mChoice);
+
+                system.showAllShowtimes();
+                cout << "Select a showtime number: ";
+                int sChoice; 
+                cin >> sChoice;
+                showtime* selectedShow = system.getShowtime(sChoice);
+
+                if(selectedShow->bookSeat()){
+                    Ticket t(selectedMovie, selectedShow->getTime());
+                    u1.bookticket(t);
+                } else{
+                    throw runtime_error("No seats available for this showtime!");
+                }
+                break;
+            }
+            case 4:
+                u1.viewbooking();
+                break;
+            case 5:{
+                u1.viewbooking();
+                cout << "Enter Ticket ID to cancel: ";
+                int tID; cin >> tID;
+                if(u1.ticketcancel(tID)){
+                    cout << "Ticket cancelled successfully.\n";
+                    // Optional: Restore seat in showtime if mapping is added
+                } 
+                else{
+                    throw runtime_error("Invalid Ticket ID! Cannot cancel.");
+                }
+                break;
+            }
+            case 6:
+                cout << "Thank you for using movie Ticket Booking System!\n";
+                break;
+            default:
+                cout << "Invalid choice, try again!\n";
+        }
+    } catch (exception &e){
+        cout << "Error: " << e.what() << endl;
+    }
+}
+    return 0;
+}
