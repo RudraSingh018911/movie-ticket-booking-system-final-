@@ -110,7 +110,7 @@ public:
     void viewbooking(){
         cout << "\nBookings for " << name << ":\n";
         if (bookedtickets.empty()) {
-            cout << "No bookings yet.\n";
+            cout << "No bookings till now.\n";
         } else {
             for(int i = 0; i<bookedtickets.size(); i++){
                 bookedtickets[i].displayticket();
