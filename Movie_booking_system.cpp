@@ -126,15 +126,18 @@ public:
         }
     }
 
-    bool ticketcancel(int ticketid){
-        for (auto it = bookedtickets.begin(); it != bookedtickets.end(); ++it){
-            if (it->getid() == ticketid){
-                bookedtickets.erase(it);
+    bool ticketcancel(int ticketid) {
+        for(int i=0; i< bookedtickets.size(); i++){
+            if(bookedtickets[i].getid() == ticketid ){
+                for(int j = i; j< bookedtickets.size()- 1; j++){
+                    bookedtickets[j] = bookedtickets[j+1];
+                }
+                bookedtickets.pop_back();
                 return true;
             }
         }
-        return false;
-    }
+    return false;
+ }
 };
 
 class bookingsystem{
