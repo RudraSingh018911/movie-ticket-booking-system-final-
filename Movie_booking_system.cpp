@@ -20,7 +20,9 @@ public:
     string gettitle(){
          return title; 
         }
-    ~movie(){}
+    ~movie(){
+        cout<<"movie destructor called"<<endl;
+    }
 };
 
 class showtime{
@@ -56,6 +58,8 @@ public:
     int getavailableseats(){
          return avseats; 
         }
+~showtime(){
+cout<<"showtime destructor has been called"<<endl;
 };
 class ticket{
 private:
