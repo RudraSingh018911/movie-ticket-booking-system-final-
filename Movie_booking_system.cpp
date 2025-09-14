@@ -1,4 +1,5 @@
 //contributors : 202411083, 202411084, 202411036, 202411059
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -60,6 +61,7 @@ public:
         }
 ~showtime(){
 cout<<"showtime destructor has been called"<<endl;
+}
 };
 class ticket{
 private:
