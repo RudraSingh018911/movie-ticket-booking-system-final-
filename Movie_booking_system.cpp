@@ -1,6 +1,4 @@
 //contributors : 202411083, 202411084, 202411036, 202411059
-//adding dynamic memory allocation, default arguments, friend function
-
 #include <iostream>
 #include <vector>
 #include <string>
@@ -137,17 +135,15 @@ public:
                 return true;
             }
         }
-        return false;
-    }
+        return false;}
     friend bool hasBookedSameMovie(const user &u1, const user &u2);
     ~user(){
         for (int i=0;i<bookedtickets.size();i++){
         delete bookedtickets[i];
     }
-        cout<<"user destructor has been called"<<endl;
+     cout<<"user destructor has been called"<<endl;
     }
 };
-
 
 class bookingsystem{
 private:
@@ -261,7 +257,7 @@ int main(){
                     if(selectedshow->bookseat()){
                         ticket* t = new ticket(selectedmovie, selectedshow->gettime());
                          users[uindex].bookticket(t);
-                        }
+                    }
                     else throw runtime_error("No seats available for this showtime!");
                     break;
                 }
