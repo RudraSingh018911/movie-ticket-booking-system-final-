@@ -60,6 +60,7 @@ public:
         }
 ~showtime(){
 cout<<"showtime destructor has been called"<<endl;
+}
 };
 class ticket{
 private:
