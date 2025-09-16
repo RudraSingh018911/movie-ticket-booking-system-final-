@@ -100,11 +100,21 @@ public:
         email=e;
     }
     void quicksignup(string n, string e){
+        if (!isValidEmail(e)) {
+            throw runtime_error("Invalid email format! Please include '@' and a domain.");
+        }
         name=n;
         email=e;
         cout<<"Quick signup done for "<<name<<" with email: "<<email<<endl;
     }
-
+    bool isValidEmail(const string& e) {
+        bool hasAt = false, hasDot = false;
+        for (char c : e) {
+            if (c == '@') hasAt = true;
+            else if (c == '.' && hasAt) hasDot = true;
+        }
+        return hasAt && hasDot;
+    }
     string getname()const{
         return name; 
     }
@@ -220,9 +230,20 @@ int main(){
     cout<<"Please sign up first.\n";
     cout<<"Enter your name: ";
     cin>>uname;
-    cout<<"Enter your email: "; 
-    cin>>uemail;
-    users.push_back(user(uname,uemail));
+    bool validEmail = false;
+    while (!validEmail) {
+        cout<<"Enter your email: "; 
+        cin>>uemail;
+        try {
+            user newUser("", "");
+            newUser.quicksignup(uname, uemail);
+            users.push_back(newUser);
+            validEmail = true;
+        } catch (exception &e) {
+            cout<<"Error: "<<e.what()<<endl;
+            cout<<"Please try again.\n";
+        }
+    }
     system.addmovie(movie("Inception","Sci-Fi",148));
     system.addmovie(movie("Avengers","Action",180));
     system.addmovie(movie("Interstellar","Sci-Fi",169));
@@ -288,10 +309,21 @@ int main(){
                 case 6:{
                     cout << "Enter new user name: ";
                     cin>>uname;
-                    cout<<"Enter new user email: "; 
-                    cin>>uemail;
-                    users.push_back(user(uname,uemail));
-                    cout<<"New user added: "<<uname<<endl;
+                    validEmail = false;
+                    while (!validEmail) {
+                        cout<<"Enter new user email: "; 
+                        cin>>uemail;
+                        try {
+                            user newUser("", "");
+                            newUser.quicksignup(uname, uemail);
+                            users.push_back(newUser);
+                            cout<<"New user added: "<<uname<<endl;
+                            validEmail = true;
+                        } catch (exception &e) {
+                            cout<<"Error: "<<e.what()<<endl;
+                            cout<<"Please try again.\n";
+                        }
+                    }
                     break;
                 }
                 case 7: {
