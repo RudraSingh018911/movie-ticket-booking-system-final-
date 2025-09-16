@@ -242,9 +242,11 @@ int main(){
     while (!validEmail) {
         cout<<"Enter your email: "; 
         cin>>uemail;
+        cout<<"Create your password: ";
+        cin>>upassword;
         try {
-            user newUser("", "");
-            newUser.quicksignup(uname, uemail);
+            user newUser("", "", "");
+            newUser.quicksignup(uname, uemail, upassword);
             users.push_back(newUser);
             validEmail = true;
         } catch (exception &e) {
@@ -321,9 +323,11 @@ int main(){
                     while (!validEmail) {
                         cout<<"Enter new user email: "; 
                         cin>>uemail;
+                        out<<"Enter new user password: ";
+                        cin>>upassword;
                         try {
-                            user newUser("", "");
-                            newUser.quicksignup(uname, uemail);
+                            user newUser("", "", "");
+                            newUser.quicksignup(uname, uemail, upassword);
                             users.push_back(newUser);
                             cout<<"New user added: "<<uname<<endl;
                             validEmail = true;
