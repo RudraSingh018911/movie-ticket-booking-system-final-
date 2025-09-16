@@ -230,10 +230,11 @@ int main(){
     system.addshowtime(showtime("2:00 PM","2025-09-12",2,3));
     system.addshowtime(showtime("7:00 PM","2025-09-12",3,2));
     int choice=0;
-    while (choice!=7){
+    while (choice!=8){
         cout<<"\n========= Movie Ticket Booking =========\n";
         cout<<"1. View Movies\n2. View Showtimes\n3. Book Ticket\n4. View My Bookings\n";
-        cout<<"5. Cancel Ticket\n6. Add New User (Sign Up)\n7. Exit\n";
+        cout<<"5. Cancel Ticket\n6. Add New User (Sign Up)\n";
+         cout << "7. Show User Details\n8. Exit\n";
         cout<<"Enter your choice: ";
         if(!(cin>>choice)){
             cin.clear();
@@ -293,9 +294,14 @@ int main(){
                     cout<<"New user added: "<<uname<<endl;
                     break;
                 }
-                case 7:
-                    cout<<"Thank you for using Movie Ticket Booking System!\n";
+                case 7: {
+                    int uindex = selectuser(users);
+                    showUserDetails(users[uindex]);  
                     break;
+                }
+                case 8:
+                  cout << "Thank you for using Movie Ticket Booking System!\n";
+                  break;
                 default:
                     cout<<"Invalid choice, try again!\n";
             }
