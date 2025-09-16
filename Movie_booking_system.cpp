@@ -8,14 +8,22 @@ class movie{
 private:
     string title,genre;
     int duration;
+    double imdb_rating;
+    double rotten_tomatoes;
+    long long box_office_inr;
+    string actors;
 public:
-    movie(string title,string genre,int duration){
+    movie(string title,string genre,int duration, double imdb, double rt, long long bo, string act){
         this->title=title;
         this->genre=genre;
         this->duration=duration;
+        this->imdb_rating=imdb;
+        this->rotten_tomatoes=rt;
+        this->box_office_inr=bo;
+        this->actors=act;
     }
     void displaydetails(int index){
-        cout<<index<<". "<<title<<" | Genre: "<<genre<<" | Duration: "<<duration<<" mins\n";
+        cout<<index<<". "<<title<<" | Genre: "<<genre<<" | Duration: "<<duration<<" mins | IMDb: "<<imdb_rating<<" | Rotten Tomatoes: "<<rotten_tomatoes<<"% | Box Office: Rs "<<box_office_inr<<" INR | Actors: "<<actors<<"\n";
     }
     string gettitle(){
          return title; 
@@ -244,9 +252,9 @@ int main(){
             cout<<"Please try again.\n";
         }
     }
-    system.addmovie(movie("Inception","Sci-Fi",148));
-    system.addmovie(movie("Avengers","Action",180));
-    system.addmovie(movie("Interstellar","Sci-Fi",169));
+    system.addmovie(movie("Inception","Sci-Fi",148, 8.8, 87.0, 6960000000LL, "Leonardo DiCaprio, Joseph Gordon-Levitt, Elliot Page, Tom Hardy"));
+    system.addmovie(movie("Avengers","Action",180, 8.4, 94.0, 30000000000LL, "Robert Downey Jr., Chris Evans, Mark Ruffalo, Chris Hemsworth"));
+    system.addmovie(movie("Interstellar","Sci-Fi",169, 8.7, 73.0, 5200000000LL, "Matthew McConaughey, Anne Hathaway, Jessica Chastain, Michael Caine"));
     system.addshowtime(showtime("10:00 AM","2025-09-12",1,5));
     system.addshowtime(showtime("2:00 PM","2025-09-12",2,3));
     system.addshowtime(showtime("7:00 PM","2025-09-12",3,2));
