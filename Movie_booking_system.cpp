@@ -255,8 +255,8 @@ int main(){
                     cin>>schoice;
                     showtime* selectedshow=system.getshowtime(schoice);
                     if(selectedshow->bookseat()){
-                        ticket t(selectedmovie, selectedshow->gettime());
-                        users[uindex].bookticket(t);
+                        ticket* t = new ticket(selectedmovie, selectedshow->gettime());
+                         users[uindex].bookticket(t);
                     }
                     else throw runtime_error("No seats available for this showtime!");
                     break;
