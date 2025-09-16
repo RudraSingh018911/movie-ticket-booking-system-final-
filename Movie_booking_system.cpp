@@ -136,7 +136,7 @@ public:
             }
         }
         return false;}
-    friend bool hasBookedSameMovie(const user &u1, const user &u2);
+    friend void showUserDetails(const user &u);
     ~user(){
         for (int i=0;i<bookedtickets.size();i++){
         delete bookedtickets[i];
@@ -144,6 +144,13 @@ public:
      cout<<"user destructor has been called"<<endl;
     }
 };
+
+void showUserDetails(const user &u) {
+    cout << "\n*** User Details ***\n";
+    cout << "Name: " << u.name << endl;
+    cout << "Email: " << u.email << endl;
+    cout << "Booked Tickets Count: " << u.bookedtickets.size() << endl;
+}
 
 class bookingsystem{
 private:
