@@ -94,45 +94,61 @@ public:
 int ticket::count=0;
 class user{
 private:
-    string name,email;
-    vector<ticket> bookedtickets;
+    string name, email;
+    vector<ticket*> bookedtickets;
 public:
-    user(string n,string e){
-         name = n; 
-         email = e;
-         }
-    string getname()const{
-         return name; 
-        }
-    string getmail()const{ 
-        return email; 
+    user(string n, string e){
+        name=n;
+        email=e;
     }
-    void bookticket(ticket t){
+    void quicksignup(string n, string e){
+        name=n;
+        email=e;
+        cout<<"Quick signup done for "<<name<<" with email: "<<email<<endl;
+    }
+
+    string getname()const{
+        return name; 
+    }
+    string getmail()const{ 
+        return email;
+    }
+    void bookticket(ticket* t){
         bookedtickets.push_back(t);
-        cout<<"Ticket booked successfully for "<<name<<endl;
+        cout <<"Ticket booked successfully for"<<name<< endl;
     }
     void viewbooking(){
-        cout<<"\nBookings for "<<name<<":\n";
-        if(bookedtickets.empty()){
-            cout<<"No bookings yet.\n";
-        }
-        else for(auto &t:bookedtickets){
-            t.displayticket();
+    cout<<"\nBookings for "<<name<<":\n";
+    if (bookedtickets.empty()){
+        cout<<"No bookings yet.\n";
+    } 
+    else{
+        for(int i=0; i<bookedtickets.size();i++){
+            bookedtickets[i]->displayticket();
         }
     }
+}
+
     bool ticketcancel(int ticketid){
         for (int i=0;i<bookedtickets.size();i++){
-            if (bookedtickets[i].getid()==ticketid){
-                bookedtickets.erase(bookedtickets.begin()+i);
+            if (bookedtickets[i]->getid() == ticketid){
+                delete bookedtickets[i];
+                bookedtickets.erase(bookedtickets.begin() + i);
                 return true;
             }
         }
         return false;
     }
+    friend bool hasBookedSameMovie(const user &u1, const user &u2);
     ~user(){
-        cout<<"user destructors has been called"<<endl;
+        for (int i=0;i<bookedtickets.size();i++){
+        delete bookedtickets[i];
+    }
+        cout<<"user destructor has been called"<<endl;
     }
 };
+
+
 class bookingsystem{
 private:
     vector<movie> movies;
@@ -243,9 +259,9 @@ int main(){
                     cin>>schoice;
                     showtime* selectedshow=system.getshowtime(schoice);
                     if(selectedshow->bookseat()){
-                        ticket t(selectedmovie, selectedshow->gettime());
-                        users[uindex].bookticket(t);
-                    }
+                        ticket* t = new ticket(selectedmovie, selectedshow->gettime());
+                         users[uindex].bookticket(t);
+                        }
                     else throw runtime_error("No seats available for this showtime!");
                     break;
                 }
