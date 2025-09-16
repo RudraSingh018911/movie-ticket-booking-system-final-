@@ -1,4 +1,5 @@
 //contributors : 202411083, 202411084, 202411036, 202411059
+//adding dynamic memory allocation, default arguments, friend function
 
 #include <iostream>
 #include <vector>
