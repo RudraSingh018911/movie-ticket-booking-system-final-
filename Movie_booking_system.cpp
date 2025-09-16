@@ -100,19 +100,24 @@ public:
 int ticket::count=0;
 class user{
 private:
-    string name, email;
+    string name, email, password;
     vector<ticket*> bookedtickets;
 public:
-    user(string n, string e){
+    user(string n, string e, string p){
         name=n;
         email=e;
+        password=p;
     }
-    void quicksignup(string n, string e){
+    void quicksignup(string n, string e, string p){
         if (!isValidEmail(e)) {
             throw runtime_error("Invalid email format! Please include '@' and a domain.");
         }
+        if (p.empty()) {
+            throw runtime_error("Password cannot be empty!");
+        }
         name=n;
         email=e;
+        password=p;
         cout<<"Quick signup done for "<<name<<" with email: "<<email<<endl;
     }
     bool isValidEmail(const string& e) {
@@ -167,6 +172,7 @@ void showUserDetails(const user &u) {
     cout << "\n*** User Details ***\n";
     cout << "Name: " << u.name << endl;
     cout << "Email: " << u.email << endl;
+    cout << "Password: " << u.password << endl;
     cout << "Booked Tickets Count: " << u.bookedtickets.size() << endl;
 }
 
@@ -233,7 +239,7 @@ int selectuser(const vector<user>& users){
 int main(){
     bookingsystem system;
     vector<user> users;
-    string uname,uemail;
+    string uname,uemail,upassword;
     cout<<"Welcome to Movie Ticket Booking System!\n";
     cout<<"Please sign up first.\n";
     cout<<"Enter your name: ";
@@ -323,7 +329,7 @@ int main(){
                     while (!validEmail) {
                         cout<<"Enter new user email: "; 
                         cin>>uemail;
-                        out<<"Enter new user password: ";
+                        cout<<"Enter new user password: ";
                         cin>>upassword;
                         try {
                             user newUser("", "", "");
