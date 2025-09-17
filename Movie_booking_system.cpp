@@ -147,6 +147,18 @@ public:
     void bookticket(ticket* t){
         bookedtickets.push_back(t);
         cout <<"Ticket booked successfully for "<<name<< endl;
+        ofstream fout("bookings.txt", ios::app);
+        if(fout.is_open()){
+            fout << "Customer: " << name << " | Email: " << email
+                 << " | Movie: " << t->getmovietitle()
+                 << " | Showtime: " << t->getshowtime()
+                 << " | Seat: " << t->getseat()
+                 << " | Price: Rs." << t->getprice() << "\n";
+            fout.close();
+        }
+        else{
+            cerr << "Error: Unable to open bookings.txt file!\n";
+        }
     }
     void viewbooking(){
     cout<<"\nBookings for "<<name<<":\n";
@@ -292,8 +304,8 @@ int main(){
                     cin>>seatid;
                     if(selectedshow->bookseat(seatid)){
                         int price=selectedshow->getseatprice(seatid);
-                        ticket* t = new ticket(selectedmovie, selectedshow->gettime(), seatid, price);
-                         users[uindex].bookticket(t);
+                        ticket* t = new ticket(selectedmovie, selectedshow->getdate() + " " + selectedshow->gettime(), seatid, price);
+                        users[uindex].bookticket(t);
                     }
                     else throw runtime_error("Seat not available!");
                     break;
