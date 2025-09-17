@@ -3,83 +3,102 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include<fstream>
+#include<sstream>
+#include<map>
 using namespace std;
 class movie{
 private:
     string title,genre;
     int duration;
-    double imdb_rating;
-    double rotten_tomatoes;
-    long long box_office_inr;
-    string actors;
 public:
-    movie(string title,string genre,int duration, double imdb, double rt, long long bo, string act){
+    movie(string title,string genre,int duration){
         this->title=title;
         this->genre=genre;
         this->duration=duration;
-        this->imdb_rating=imdb;
-        this->rotten_tomatoes=rt;
-        this->box_office_inr=bo;
-        this->actors=act;
     }
     void displaydetails(int index){
-        cout<<index<<". "<<title<<" | Genre: "<<genre<<" | Duration: "<<duration<<" mins | IMDb: "<<imdb_rating<<" | Rotten Tomatoes: "<<rotten_tomatoes<<"% | Box Office: Rs "<<box_office_inr<<" INR | Actors: "<<actors<<"\n";
+        cout<<index<<". "<<title<<" | Genre: "<<genre<<" | Duration: "<<duration<<" mins\n";
     }
     string gettitle(){
          return title; 
         }
     ~movie(){
-        cout<<"movie destructor called"<<endl;
     }
 };
 
 class showtime{
 private:
     string time,date;
-    int hallnumber,avseats;
+    int hallnumber;
+    vector<string> seats;
+    map<string,bool> seatstatus;
 public:
-    showtime(string time,string date,int hall=1,int seats=50){
+    showtime(string time,string date,int hall=1){
         this->time=time;
         this->date=date;
         hallnumber=hall;
-        avseats=seats;
+        for(int r=1;r<=3;r++){
+            for(char c='A';c<='E';c++){
+                string seat=to_string(r)+c;
+                seats.push_back(seat);
+                seatstatus[seat]=true;
+            }
+        }
     }
     void showdetails(int index){
-        cout<<index<<". Date: "<<date<<" | Time: "<<time<<" | Hall: "<<hallnumber<<" | Available Seats: "<<avseats<<endl;
+        cout<<index<<". Date: "<<date<<" | Time: "<<time<<" | Hall: "<<hallnumber<<endl;
     }
-    bool bookseat(){
-        if (avseats > 0){
-            avseats--;
+    void displayavailableseats(){
+        cout<<"\nAvailable seats for "<<date<<" "<<time<<":\n";
+        for(auto &s:seats){
+            if(seatstatus[s]){
+                int price=getseatprice(s);
+                cout<<s<<" (Rs."<<price<<")  ";
+            }
+        }
+        cout<<"\n";
+    }
+    bool bookseat(const string &seatid){
+        if(seatstatus.find(seatid)!=seatstatus.end() && seatstatus[seatid]){
+            seatstatus[seatid]=false;
             return true;
         }
         return false;
     }
-    void cancelseat(){
-         avseats++; 
+    void cancelseat(const string &seatid){
+        if(seatstatus.find(seatid)!=seatstatus.end()){
+            seatstatus[seatid]=true;
         }
+    }
     string gettime(){ 
         return time;
      }
     string getdate(){ 
         return date;
      }
-    int getavailableseats(){
-         return avseats; 
-        }
+    int getseatprice(const string &seatid){
+        if(seatid[0]=='1') return 200;
+        if(seatid[0]=='2') return 500;
+        if(seatid[0]=='3') return 1000;
+        return 0;
+    }
 ~showtime(){
-cout<<"showtime destructor has been called"<<endl;
 }
 };
 class ticket{
 private:
     static int count;
     int ticketid;
-    string movietitle,showtime;
+    string movietitle,showtime,seatid;
+    int price;
 public:
-    ticket(string m,string s){
+    ticket(string m,string s,string seat,int p){
         ticketid=count++;
         movietitle=m;
         showtime=s;
+        seatid=seat;
+        price=p;
     }
     int getid(){ 
         return ticketid; 
@@ -90,44 +109,35 @@ public:
     string getmovietitle(){
          return movietitle; 
         }
+    string getseat(){
+        return seatid;
+    }
+    int getprice(){
+        return price;
+    }
     void displayticket(){
-        cout<<"Ticket ID: "<<ticketid<<" | Movie: "<<movietitle<<" | Show: "<<showtime<<endl;
+        cout<<"Ticket ID: "<<ticketid<<" | Movie: "<<movietitle<<" | Show: "<<showtime
+        <<" | Seat: "<<seatid<<" | Price: Rs."<<price<<endl;
     }
     ~ticket(){
-        cout<<"ticket destructor is called"<<endl;
     }
 };
 int ticket::count=0;
 class user{
 private:
-    string name, email, password;
+    string name, email;
     vector<ticket*> bookedtickets;
 public:
-    user(string n, string e, string p){
+    user(string n, string e){
         name=n;
         email=e;
-        password=p;
     }
-    void quicksignup(string n, string e, string p){
-        if (!isValidEmail(e)) {
-            throw runtime_error("Invalid email format! Please include '@' and a domain.");
-        }
-        if (p.empty()) {
-            throw runtime_error("Password cannot be empty!");
-        }
+    void quicksignup(string n, string e){
         name=n;
         email=e;
-        password=p;
         cout<<"Quick signup done for "<<name<<" with email: "<<email<<endl;
     }
-    bool isValidEmail(const string& e) {
-        bool hasAt = false, hasDot = false;
-        for (char c : e) {
-            if (c == '@') hasAt = true;
-            else if (c == '.' && hasAt) hasDot = true;
-        }
-        return hasAt && hasDot;
-    }
+
     string getname()const{
         return name; 
     }
@@ -136,7 +146,7 @@ public:
     }
     void bookticket(ticket* t){
         bookedtickets.push_back(t);
-        cout <<"Ticket booked successfully for"<<name<< endl;
+        cout <<"Ticket booked successfully for "<<name<< endl;
     }
     void viewbooking(){
     cout<<"\nBookings for "<<name<<":\n";
@@ -150,31 +160,23 @@ public:
     }
 }
 
-    bool ticketcancel(int ticketid){
+    bool ticketcancel(int ticketid,showtime* st){
         for (int i=0;i<bookedtickets.size();i++){
             if (bookedtickets[i]->getid() == ticketid){
+                st->cancelseat(bookedtickets[i]->getseat());
                 delete bookedtickets[i];
                 bookedtickets.erase(bookedtickets.begin() + i);
                 return true;
             }
         }
         return false;}
-    friend void showUserDetails(const user &u);
+    friend bool hasBookedSameMovie(const user &u1, const user &u2);
     ~user(){
         for (int i=0;i<bookedtickets.size();i++){
         delete bookedtickets[i];
     }
-     cout<<"user destructor has been called"<<endl;
     }
 };
-
-void showUserDetails(const user &u) {
-    cout << "\n*** User Details ***\n";
-    cout << "Name: " << u.name << endl;
-    cout << "Email: " << u.email << endl;
-    cout << "Password: " << u.password << endl;
-    cout << "Booked Tickets Count: " << u.bookedtickets.size() << endl;
-}
 
 class bookingsystem{
 private:
@@ -219,7 +221,6 @@ public:
         return &showtimes[index-1];
     }
     ~bookingsystem(){
-        cout<<"booking system destructor has been called"<<endl;
     }
 };
 int selectuser(const vector<user>& users){
@@ -239,39 +240,25 @@ int selectuser(const vector<user>& users){
 int main(){
     bookingsystem system;
     vector<user> users;
-    string uname,uemail,upassword;
+    string uname,uemail;
     cout<<"Welcome to Movie Ticket Booking System!\n";
     cout<<"Please sign up first.\n";
     cout<<"Enter your name: ";
     cin>>uname;
-    bool validEmail = false;
-    while (!validEmail) {
-        cout<<"Enter your email: "; 
-        cin>>uemail;
-        cout<<"Create your password: ";
-        cin>>upassword;
-        try {
-            user newUser("", "", "");
-            newUser.quicksignup(uname, uemail, upassword);
-            users.push_back(newUser);
-            validEmail = true;
-        } catch (exception &e) {
-            cout<<"Error: "<<e.what()<<endl;
-            cout<<"Please try again.\n";
-        }
-    }
-    system.addmovie(movie("Inception","Sci-Fi",148, 8.8, 87.0, 6960000000LL, "Leonardo DiCaprio, Joseph Gordon-Levitt, Elliot Page, Tom Hardy"));
-    system.addmovie(movie("Avengers","Action",180, 8.4, 94.0, 30000000000LL, "Robert Downey Jr., Chris Evans, Mark Ruffalo, Chris Hemsworth"));
-    system.addmovie(movie("Interstellar","Sci-Fi",169, 8.7, 73.0, 5200000000LL, "Matthew McConaughey, Anne Hathaway, Jessica Chastain, Michael Caine"));
-    system.addshowtime(showtime("10:00 AM","2025-09-12",1,5));
-    system.addshowtime(showtime("2:00 PM","2025-09-12",2,3));
-    system.addshowtime(showtime("7:00 PM","2025-09-12",3,2));
+    cout<<"Enter your email: "; 
+    cin>>uemail;
+    users.push_back(user(uname,uemail));
+    system.addmovie(movie("Inception","Sci-Fi",148));
+    system.addmovie(movie("Avengers","Action",180));
+    system.addmovie(movie("Interstellar","Sci-Fi",169));
+    system.addshowtime(showtime("10:00 AM","2025-09-12",1));
+    system.addshowtime(showtime("2:00 PM","2025-09-12",2));
+    system.addshowtime(showtime("7:00 PM","2025-09-12",3));
     int choice=0;
-    while (choice!=8){
+    while (choice!=7){
         cout<<"\n========= Movie Ticket Booking =========\n";
         cout<<"1. View Movies\n2. View Showtimes\n3. Book Ticket\n4. View My Bookings\n";
-        cout<<"5. Cancel Ticket\n6. Add New User (Sign Up)\n";
-         cout << "7. Show User Details\n8. Exit\n";
+        cout<<"5. Cancel Ticket\n6. Add New User (Sign Up)\n7. Exit\n";
         cout<<"Enter your choice: ";
         if(!(cin>>choice)){
             cin.clear();
@@ -299,11 +286,16 @@ int main(){
                     int schoice;
                     cin>>schoice;
                     showtime* selectedshow=system.getshowtime(schoice);
-                    if(selectedshow->bookseat()){
-                        ticket* t = new ticket(selectedmovie, selectedshow->gettime());
+                    selectedshow->displayavailableseats();
+                    cout<<"Enter seat ID to book (e.g., 2B): ";
+                    string seatid;
+                    cin>>seatid;
+                    if(selectedshow->bookseat(seatid)){
+                        int price=selectedshow->getseatprice(seatid);
+                        ticket* t = new ticket(selectedmovie, selectedshow->gettime(), seatid, price);
                          users[uindex].bookticket(t);
                     }
-                    else throw runtime_error("No seats available for this showtime!");
+                    else throw runtime_error("Seat not available!");
                     break;
                 }
                 case 4:{
@@ -317,7 +309,12 @@ int main(){
                     cout<<"Enter Ticket ID to cancel: ";
                     int tid;
                     cin>>tid;
-                    if(users[uindex].ticketcancel(tid))
+                    system.showallshowtimes();
+                    cout<<"Enter showtime number for the ticket: ";
+                    int schoice;
+                    cin>>schoice;
+                    showtime* st=system.getshowtime(schoice);
+                    if(users[uindex].ticketcancel(tid,st))
                         cout<<"Ticket cancelled successfully.\n";
                     else throw runtime_error("Invalid Ticket ID! Cannot cancel.");
                     break;
@@ -325,33 +322,15 @@ int main(){
                 case 6:{
                     cout << "Enter new user name: ";
                     cin>>uname;
-                    validEmail = false;
-                    while (!validEmail) {
-                        cout<<"Enter new user email: "; 
-                        cin>>uemail;
-                        cout<<"Enter new user password: ";
-                        cin>>upassword;
-                        try {
-                            user newUser("", "", "");
-                            newUser.quicksignup(uname, uemail, upassword);
-                            users.push_back(newUser);
-                            cout<<"New user added: "<<uname<<endl;
-                            validEmail = true;
-                        } catch (exception &e) {
-                            cout<<"Error: "<<e.what()<<endl;
-                            cout<<"Please try again.\n";
-                        }
-                    }
+                    cout<<"Enter new user email: "; 
+                    cin>>uemail;
+                    users.push_back(user(uname,uemail));
+                    cout<<"New user added: "<<uname<<endl;
                     break;
                 }
-                case 7: {
-                    int uindex = selectuser(users);
-                    showUserDetails(users[uindex]);  
+                case 7:
+                    cout<<"Thank you for using Movie Ticket Booking System!\n";
                     break;
-                }
-                case 8:
-                  cout << "Thank you for using Movie Ticket Booking System!\n";
-                  break;
                 default:
                     cout<<"Invalid choice, try again!\n";
             }
