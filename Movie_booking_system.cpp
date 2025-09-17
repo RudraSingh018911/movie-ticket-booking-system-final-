@@ -7,6 +7,17 @@
 #include<sstream>
 #include<map>
 using namespace std;
+
+bool isValidEmail(const string &email){
+    vector<string> allowedDomains={"@gmail.com","@yahoo.com","@rediffmail.com"};
+    for(const auto &d:allowedDomains){
+        if(email.size()>=d.size() && email.find(d)!=string::npos){
+            return true;
+        }
+    }
+    return false;
+}
+
 class movie{
 private:
     string title,genre;
@@ -125,14 +136,21 @@ public:
 int ticket::count=0;
 class user{
 private:
-    string name, email;
+    string name, email,password;   // added password
     vector<ticket*> bookedtickets;
 public:
-    user(string n, string e){
+    user(string n, string e,string p){
         name=n;
+        if(!isValidEmail(e)){
+            throw invalid_argument("Invalid email! Only gmail, yahoo, rediffmail allowed.");
+        }
         email=e;
+        password=p;
     }
     void quicksignup(string n, string e){
+        if(!isValidEmail(e)){
+            throw invalid_argument("Invalid email! Only gmail, yahoo, rediffmail allowed.");
+        }
         name=n;
         email=e;
         cout<<"Quick signup done for "<<name<<" with email: "<<email<<endl;
@@ -252,14 +270,21 @@ int selectuser(const vector<user>& users){
 int main(){
     bookingsystem system;
     vector<user> users;
-    string uname,uemail;
+    string uname,uemail,upass;
     cout<<"Welcome to Movie Ticket Booking System!\n";
     cout<<"Please sign up first.\n";
     cout<<"Enter your name: ";
     cin>>uname;
     cout<<"Enter your email: "; 
     cin>>uemail;
-    users.push_back(user(uname,uemail));
+    cout<<"Create a password: ";
+    cin>>upass;
+    try{
+        users.push_back(user(uname,uemail,upass));
+    }catch(exception &e){
+        cout<<"Error: "<<e.what()<<endl;
+        return 0;
+    }
     system.addmovie(movie("Inception","Sci-Fi",148));
     system.addmovie(movie("Avengers","Action",180));
     system.addmovie(movie("Interstellar","Sci-Fi",169));
@@ -336,8 +361,14 @@ int main(){
                     cin>>uname;
                     cout<<"Enter new user email: "; 
                     cin>>uemail;
-                    users.push_back(user(uname,uemail));
-                    cout<<"New user added: "<<uname<<endl;
+                    cout<<"Create a password: ";
+                    cin>>upass;
+                    try{
+                        users.push_back(user(uname,uemail,upass));
+                        cout<<"New user added: "<<uname<<endl;
+                    }catch(exception &e){
+                        cout<<"Error: "<<e.what()<<endl;
+                    }
                     break;
                 }
                 case 7:
