@@ -200,13 +200,19 @@ public:
             }
         }
         return false;}
-    friend bool hasBookedSameMovie(const user &u1, const user &u2);
+    friend void showUserDetails(const user &u);
     ~user(){
         for (int i=0;i<bookedtickets.size();i++){
         delete bookedtickets[i];
     }
     }
 };
+void showUserDetails(const user &u) {
+    cout << "\n*** User Details ***\n";
+    cout << "Name: " << u.name << endl;
+    cout << "Email: " << u.email << endl;
+    cout << "Booked Tickets Count: " << u.bookedtickets.size() << endl;
+}
 
 class bookingsystem{
 private:
@@ -292,10 +298,11 @@ int main(){
     system.addshowtime(showtime("2:00 PM","2025-09-12",2));
     system.addshowtime(showtime("7:00 PM","2025-09-12",3));
     int choice=0;
-    while (choice!=7){
+    while (choice!=8){
         cout<<"\n========= Movie Ticket Booking =========\n";
         cout<<"1. View Movies\n2. View Showtimes\n3. Book Ticket\n4. View My Bookings\n";
-        cout<<"5. Cancel Ticket\n6. Add New User (Sign Up)\n7. Exit\n";
+        cout<<"5. Cancel Ticket\n6. Add New User (Sign Up)\n";
+        cout << "7. Show User Details\n8. Exit\n";
         cout<<"Enter your choice: ";
         if(!(cin>>choice)){
             cin.clear();
@@ -371,9 +378,14 @@ int main(){
                     }
                     break;
                 }
-                case 7:
-                    cout<<"Thank you for using Movie Ticket Booking System!\n";
+                case 7: {
+                    int uindex = selectuser(users);
+                    showUserDetails(users[uindex]);  
                     break;
+                }
+                case 8:
+                  cout << "Thank you for using Movie Ticket Booking System!\n";
+                  break;
                 default:
                     cout<<"Invalid choice, try again!\n";
             }
