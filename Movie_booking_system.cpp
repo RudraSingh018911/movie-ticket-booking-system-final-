@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <ctime>
 #include <random>
-#include <regex>
 using namespace std;
 
 bool isValidEmail(const string &email){
@@ -22,18 +21,15 @@ bool isValidEmail(const string &email){
     return false;
 }
 
-// Validation functions for payment inputs
 bool isValidCardNumber(const string &cardNumber) {
-    // Remove spaces and dashes
+    
     string cleaned = cardNumber;
     cleaned.erase(remove(cleaned.begin(), cleaned.end(), ' '), cleaned.end());
     cleaned.erase(remove(cleaned.begin(), cleaned.end(), '-'), cleaned.end());
     
-    // Check if all digits and valid length
     if (cleaned.length() < 13 || cleaned.length() > 19) return false;
     if (!all_of(cleaned.begin(), cleaned.end(), ::isdigit)) return false;
     
-    // Luhn algorithm check
     int sum = 0;
     bool alternate = false;
     for (int i = cleaned.length() - 1; i >= 0; i--) {
@@ -49,20 +45,33 @@ bool isValidCardNumber(const string &cardNumber) {
 }
 
 bool isValidExpiryDate(const string &expiryDate) {
-    regex pattern("^(0[1-9]|1[0-2])/([0-9]{2})$");
-    if (!regex_match(expiryDate, pattern)) return false;
-    
-    // Check if expiry date is in future
-    int month = stoi(expiryDate.substr(0, 2));
-    int year = stoi(expiryDate.substr(3, 2)) + 2000; // Assuming 21st century
-    
+    if (expiryDate.size() != 5 || expiryDate[2] != '/')
+        return false;
+
+    string mm = expiryDate.substr(0, 2);
+    string yy = expiryDate.substr(3, 2);
+
+    if (!isdigit(mm[0]) || !isdigit(mm[1]) || !isdigit(yy[0]) || !isdigit(yy[1]))
+        return false;
+
+    int month = stoi(mm);
+    int year = stoi(yy);
+
+    if (month < 1 || month > 12)
+        return false;
+
+
     time_t now = time(0);
     tm *ltm = localtime(&now);
-    int currentYear = 1900 + ltm->tm_year;
-    int currentMonth = 1 + ltm->tm_mon;
-    
-    return (year > currentYear) || (year == currentYear && month >= currentMonth);
+    int currentYear = (ltm->tm_year + 1900) % 100; 
+    int currentMonth = ltm->tm_mon + 1;
+
+    if (year < currentYear || (year == currentYear && month < currentMonth))
+        return false;
+
+    return true;
 }
+
 
 bool isValidCVV(const string &cvv) {
     if (cvv.length() < 3 || cvv.length() > 4) return false;
