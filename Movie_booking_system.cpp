@@ -79,8 +79,23 @@ bool isValidCVV(const string &cvv) {
 }
 
 bool isValidUPI(const string &upiId) {
-    regex pattern("^[a-zA-Z0-9\\.\\-_]{2,256}@[a-zA-Z]{2,64}$");
-    return regex_match(upiId, pattern);
+    size_t atPos = upiId.find('@');
+    if (atPos == string::npos) return false; // must contain '@'
+    if (atPos == 0 || atPos == upiId.size() - 1) return false; // '@' not first or last
+
+    string user = upiId.substr(0, atPos);
+    string provider = upiId.substr(atPos + 1);
+
+    for (char c : user) {
+        if (!(isalnum(c) || c == '.' || c == '-' || c == '_'))
+            return false;
+    }
+    if (provider.empty()) return false;
+    for (char c : provider) {
+        if (!isalpha(c)) return false;
+    }
+
+    return true;
 }
 
 bool isValidMobileNumber(const string &mobile) {
